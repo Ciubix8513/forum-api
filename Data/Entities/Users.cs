@@ -8,5 +8,6 @@ namespace Api.Data.Entities
         public string? Password { get; set; }
         public bool Privilege { get; set; }
         public string? PFP { get; set; }
+        public string? BIO {get; set;}
     }
 }

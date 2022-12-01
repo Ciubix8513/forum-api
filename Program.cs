@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 public class Program
@@ -11,13 +12,28 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddAuthentication(
+            CookieAuthenticationDefaults.AuthenticationScheme
+        ).AddCookie();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsSpecs",
+            builder=>
+            {
+                builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed(options => true).
+                AllowCredentials();
+            });
+        });
         builder.Services.AddDbContext<Api.Data.ApiAuthContext>(options =>
         {
-            //Connect to MySQL
             options.UseMySql(builder.Configuration.GetConnectionString("ApiAuthConnectction"),ServerVersion);
         });
         var app = builder.Build();
-
+        app.UseCors("CorsSpecs");
+        app.UseAuthentication();
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

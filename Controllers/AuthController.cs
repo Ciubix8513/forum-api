@@ -53,6 +53,15 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> UserProfileAsync()
     {
         int id = HttpContext.User.Claims.Where(_=>_.Type == "userid").Select(_=> Convert.ToInt32(_.Value)).First();
-        
+        var userProfile = await _authContext.User.Where(_ => _.Id == id).
+        Select(_ => new UserProfileDto(
+            _.Id,
+            _.Username,
+            _.BIO,
+            _.Email,
+            _.Privilege,
+            _.Password
+        )).FirstOrDefaultAsync();
+        return Ok(userProfile);
     }
 }
