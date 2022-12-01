@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "HNuw/DD7KJO1cybGlA7cAapMF7qjYS4O3iH3wxyYxb41qn9l7jxCo+Lw0FNf4UtAVNd8i4o85oBZ4h3vq3ZNaw==",
+  "dgSpecHash": "asJqSVQClwH4irCJcah4dhGU7zarcMVTxOmA/+4E8clRZEzDPlpTozo2Ku+7klqk6xNaWYb1wy3wtMBO4jXgHg==",
   "success": true,
   "projectFilePath": "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj",
   "expectedPackageFiles": [
@@ -31,8 +31,7 @@
     "/home/luna/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.4.0/swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512",
     "/home/luna/.nuget/packages/system.collections.immutable/6.0.0/system.collections.immutable.6.0.0.nupkg.sha512",
     "/home/luna/.nuget/packages/system.diagnostics.diagnosticsource/6.0.0/system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
-    "/home/luna/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
-    "/home/luna/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.0/microsoft.aspnetcore.app.ref.7.0.0.nupkg.sha512"
+    "/home/luna/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }
