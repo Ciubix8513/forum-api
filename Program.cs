@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
             });
 builder.Services.AddDbContext<Api.Data.ApiAuthContext>(options =>
 {
-    options.UseMySql(builder.Configuration.GetConnectionString("ApiAuthConnectction"), ServerVersion);
+    options.UseMySql(builder.Configuration.GetConnectionString("ApiAuthConnection"), ServerVersion);
 });
 var app = builder.Build();
 app.UseCors("CorsSpecs");

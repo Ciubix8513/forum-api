@@ -58,7 +58,6 @@ public class AuthController : ControllerBase
             _.Id,
             _.Username,
             _.BIO,
-            _.Email,
             _.Privilege,
             _.Password
         )).FirstOrDefaultAsync();
