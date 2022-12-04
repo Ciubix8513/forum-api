@@ -13,14 +13,14 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly ApiAuthContext _authContext;
-    public AuthController(ApiAuthContext authContext) => _authContext = authContext;
+    private readonly ApiDbContext _apiDbContext;
+    public AuthController(ApiDbContext authContext) => _apiDbContext = authContext;
 
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> LoginAsync(LoginDto login)
     {
-        var user = await _authContext.User.Where(_ => _.Username == login.Username
+        var user = await _apiDbContext.User.Where(_ => _.Username == login.Username
         && _.Password == login.Password).FirstOrDefaultAsync();
         if (user == null)
             return BadRequest("Invalid credentials");
@@ -53,7 +53,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> UserProfileAsync()
     {
         int id = HttpContext.User.Claims.Where(_=>_.Type == "userid").Select(_=> Convert.ToInt32(_.Value)).First();
-        var userProfile = await _authContext.User.Where(_ => _.Id == id).
+        var userProfile = await _apiDbContext.User.Where(_ => _.Id == id).
         Select(_ => new UserProfileDto(
             _.Id,
             _.Username,

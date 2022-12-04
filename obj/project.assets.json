@@ -1275,11 +1275,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj",
+      "projectUniqueName": "/home/luna/Projects/forum/forum-api/forum-api.csproj",
       "projectName": "forum-api",
-      "projectPath": "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj",
+      "projectPath": "/home/luna/Projects/forum/forum-api/forum-api.csproj",
       "packagesPath": "/home/luna/.nuget/packages/",
-      "outputPath": "/home/luna/Projects/School_Stuff/forum/forum-api/obj/",
+      "outputPath": "/home/luna/Projects/forum/forum-api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/luna/.nuget/NuGet/NuGet.Config"
