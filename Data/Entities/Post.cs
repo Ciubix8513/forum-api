@@ -2,6 +2,15 @@ namespace Api.Data.Entities;
 
 public class Post
 {
+    public Post(int id, int creatorId, int parentPostId, string contents, DateTime date)
+    {
+        Id = id;
+        CreatorId = creatorId;
+        ParentPostId = parentPostId;
+        Contents = contents;
+        Date = date;
+    }
+
     public int Id {get; set;}
     public int CreatorId {get; set;}
     public int ParentPostId {get; set;}
