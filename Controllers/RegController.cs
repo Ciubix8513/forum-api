@@ -31,14 +31,14 @@ public class RegController : ControllerBase
             return BadRequest("User/Form already exists");
         //The user doesn't exist and email is not in use
         //Adding the data
-        Form FormEntity = new(await _apiDbContext.Form.CountAsync(),
+        Form FormEntity = new(await _apiDbContext.Form.CountAsync() + 1,
                               form.Username,
                               form.Email,
                               form.Password.Hash(form.Username),
                               form.Reason,
                               DateTime.UtcNow);
-         await _apiDbContext.Form.AddAsync(FormEntity);
-         _apiDbContext.SaveChanges();
+        await _apiDbContext.Form.AddAsync(FormEntity);
+        await _apiDbContext.SaveChangesAsync();
         _logger.Log(LogLevel.Information, $"Added new form with id = {FormEntity.Id}");
         return Ok("Success");
     }
@@ -46,8 +46,38 @@ public class RegController : ControllerBase
     [Route("GetForms")]
     public async Task<IActionResult> GetForms()
     {
-        var l = await _apiDbContext.Form.Where(_=> _.Username != null).Select(_ => new FormGetDto(_.Id,_.Username,_.Reason,_.Date)).ToListAsync();
+        var l = await _apiDbContext.Form.Where(_ => _.Username != null).Select(_ => new FormGetDto(_.Id, _.Username, _.Reason, _.Date)).ToListAsync();
         return Ok(l);
+    }
+    [HttpPost]
+    [Route("EmailTest")]
+    public async Task<IActionResult> EmailTest()
+    {
+        MailSender.SendEmail("Test","Test","Ciubix8514@gmail.com");
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("AddUser")]
+    public async Task<IActionResult> AddUser(int userId)
+    {
+        _logger.Log(LogLevel.Information, $"trying to add user with form id = {userId}");
+        var form = await _apiDbContext.Form.Where(_ => _.Id == userId).FirstOrDefaultAsync();
+        if (form == null)
+            return BadRequest("Invalid id");
+        User user = new(await _apiDbContext.User.CountAsync() + 1,
+            form.Username,
+            form.Email,
+            form.Password,
+            false,
+            "",
+            "");
+        await _apiDbContext.User.AddAsync(user);
+        _apiDbContext.Form.Remove(form);        
+        _apiDbContext.SaveChanges();
+        //Todo Setup email
+        await _apiDbContext.SaveChangesAsync();
+        return Ok();
     }
     [HttpPost]
     [Route("Test")]
