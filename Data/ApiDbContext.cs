@@ -8,5 +8,6 @@ namespace Api.Data
         public ApiDbContext(DbContextOptions<ApiDbContext> option) : base(option){}
         public DbSet<User> User { get; set; }
         public DbSet<Form> Form {get; set;}
+        public DbSet<Post> Post {get; set;}
     }
 }

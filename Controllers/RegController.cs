@@ -19,6 +19,7 @@ public class RegController : ControllerBase
         _apiDbContext = apiDbContext;
         _logger = logger;
     }
+    //TODO add mod verification
     [HttpPost]
     [Route("AddForm")]
     public async Task<IActionResult> AddForm(FormAddDto form)

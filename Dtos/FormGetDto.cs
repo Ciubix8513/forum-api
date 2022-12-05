@@ -1,4 +1,4 @@
-namespace Api.Data;
+namespace Api.Dtos;
 
 public class FormGetDto
 {
