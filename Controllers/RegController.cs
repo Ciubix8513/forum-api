@@ -2,6 +2,7 @@ using Api.Data;
 using Api.Data.Entities;
 using Api.Dtos;
 using Api.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,6 @@ public class RegController : ControllerBase
         _apiDbContext = apiDbContext;
         _logger = logger;
     }
-    //TODO add mod verification
     [HttpPost]
     [Route("AddForm")]
     public async Task<IActionResult> AddForm(FormAddDto form)
@@ -59,9 +59,22 @@ public class RegController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [Route("AddUser")]
     public async Task<IActionResult> AddUser(int userId)
     {
+        var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
+            .Select(_ => Convert.ToBoolean(_))
+            .First();
+        if(!priv)
+        {
+            var uId = HttpContext.User.Claims.Where(_ => _.Type == "userid")
+                .Select(_ => Convert.ToInt32(_))
+                .First();
+            _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
+            return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
+        } 
+
         _logger.Log(LogLevel.Information, $"trying to add user with form id = {userId}");
         var form = await _apiDbContext.Form.Where(_ => _.Id == userId).FirstOrDefaultAsync();
         if (form == null)

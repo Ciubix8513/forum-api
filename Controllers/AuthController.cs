@@ -27,7 +27,8 @@ public class AuthController : ControllerBase
         var Claims = new List<Claim>
         {
            new Claim("userid",user.Id.ToString()),
-           new Claim("username",login.Username)
+           new Claim("username",login.Username),
+           new Claim("privilege",user.Privilege.ToString())
         };
         var claimsIdentity = new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var authProperties = new AuthenticationProperties();
@@ -52,7 +53,9 @@ public class AuthController : ControllerBase
     [Route("user-profile")]
     public async Task<IActionResult> UserProfileAsync()
     {
-        int id = HttpContext.User.Claims.Where(_=>_.Type == "userid").Select(_=> Convert.ToInt32(_.Value)).First();
+        int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
+            .Select(_ => Convert.ToInt32(_.Value))
+            .First();
         var userProfile = await _apiDbContext.User.Where(_ => _.Id == id).
         Select(_ => new UserProfileDto(
             _.Id,

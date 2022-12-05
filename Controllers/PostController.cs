@@ -36,6 +36,7 @@ public class PostController : ControllerBase
             DateTime.UtcNow);
         await _apiDbContext.AddAsync(_post);
         await _apiDbContext.SaveChangesAsync();
+        _logger.Log(LogLevel.Information, $"Added new post with id {_post.Id} by user with id {id}");
         return Ok("Success");
     }
     [HttpPost]
@@ -56,7 +57,7 @@ public class PostController : ControllerBase
                          oldPost.Date);
         _apiDbContext.Entry(oldPost).CurrentValues.SetValues(_post);
         await _apiDbContext.SaveChangesAsync();
-
+        _logger.Log(LogLevel.Information,$"Edited post id {post.Id}");
         return Ok("Success");
     }
     [HttpGet]
