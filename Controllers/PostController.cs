@@ -22,6 +22,9 @@ public class PostController : ControllerBase
     [Route("AddPost")]
     public async Task<IActionResult> AddPost(PostAddDto post)
     {
+        var parent = await _apiDbContext.Post.Where(_ => _.Id == post.ParentPostId).FirstOrDefaultAsync();
+        if (parent == null)
+            return BadRequest("Parent post doesn't exist");
         int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
             .Select(_ => Convert.ToInt32(_))
             .First();
@@ -33,6 +36,27 @@ public class PostController : ControllerBase
             DateTime.UtcNow);
         await _apiDbContext.AddAsync(_post);
         await _apiDbContext.SaveChangesAsync();
+        return Ok("Success");
+    }
+    [HttpPost]
+    [Authorize]
+    [Route("EditPost")]
+    public async Task<IActionResult> EditPost(PostEditDto post)
+    {
+        int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
+             .Select(_ => Convert.ToInt32(_))
+             .First();
+        var oldPost = await _apiDbContext.Post.Where(_ => _.Id == post.Id).FirstOrDefaultAsync();
+        if (oldPost == null)
+            return BadRequest("Post doesn't exist");
+        Post _post = new(post.Id,
+                         id,
+                         oldPost.ParentPostId,
+                         post.Contents,
+                         oldPost.Date);
+        _apiDbContext.Entry(oldPost).CurrentValues.SetValues(_post);
+        await _apiDbContext.SaveChangesAsync();
+
         return Ok("Success");
     }
     [HttpGet]
