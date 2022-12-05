@@ -26,19 +26,21 @@ public class RegController : ControllerBase
     {
         var userE = await _apiDbContext.User.Where(_ => (_.Username == form.Username || _.Email == form.Email))
             .FirstOrDefaultAsync();
-        var formE = _apiDbContext.Form.Where(_ => _.Username == form.Username || _.Email == form.Email)
+        var formE = await _apiDbContext.Form.Where(_ => _.Username == form.Username || _.Email == form.Email)
             .FirstOrDefaultAsync();
         if (userE != null || formE != null)
             return BadRequest("User/Form already exists");
         //The user doesn't exist and email is not in use
         //Adding the data
-        Form FormEntity = new(_apiDbContext.Form.Count(),
+        Form FormEntity = new(await _apiDbContext.Form.CountAsync(),
                               form.Username,
-                              form.Username,
+                              form.Email,
                               form.Password.Hash(form.Username),
                               form.Reason,
                               DateTime.UtcNow);
-        await _apiDbContext.Form.AddAsync(FormEntity);
+         await _apiDbContext.Form.AddAsync(FormEntity);
+         _apiDbContext.SaveChanges();
+        _logger.Log(LogLevel.Information, $"Added new form with id = {FormEntity.Id}");
         return Ok("Success");
     }
 
