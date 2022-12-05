@@ -19,7 +19,6 @@ public class RegController : ControllerBase
         _apiDbContext = apiDbContext;
         _logger = logger;
     }
-
     [HttpPost]
     [Route("AddForm")]
     public async Task<IActionResult> AddForm(FormAddDto form)
@@ -43,7 +42,13 @@ public class RegController : ControllerBase
         _logger.Log(LogLevel.Information, $"Added new form with id = {FormEntity.Id}");
         return Ok("Success");
     }
-
+    [HttpGet]
+    [Route("GetForms")]
+    public async Task<IActionResult> GetForms()
+    {
+        var l = await _apiDbContext.Form.Where(_=> _.Username != null).Select(_ => new FormGetDto(_.Id,_.Username,_.Reason,_.Date)).ToListAsync();
+        return Ok(l);
+    }
     [HttpPost]
     [Route("Test")]
     public async Task<IActionResult> Test()
