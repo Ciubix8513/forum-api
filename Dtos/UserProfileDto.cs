@@ -1,3 +1,4 @@
+namespace Api.Dtos;
 public class UserProfileDto
 {
     public int UserID { get; set; }
