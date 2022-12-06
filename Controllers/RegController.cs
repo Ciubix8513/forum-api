@@ -54,7 +54,7 @@ public class RegController : ControllerBase
     [Route("EmailTest")]
     public async Task<IActionResult> EmailTest()
     {
-        MailSender.SendEmail("Test","Test","Ciubix8514@gmail.com");
+        await MailSender.SendEmail("Ciubix8514@gmail.com", "Test", "This is just a test dw");
         return Ok();
     }
 
@@ -66,14 +66,14 @@ public class RegController : ControllerBase
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
             .Select(_ => Convert.ToBoolean(_))
             .First();
-        if(!priv)
+        if (!priv)
         {
             var uId = HttpContext.User.Claims.Where(_ => _.Type == "userid")
                 .Select(_ => Convert.ToInt32(_))
                 .First();
             _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
-        } 
+        }
 
         _logger.Log(LogLevel.Information, $"trying to add user with form id = {userId}");
         var form = await _apiDbContext.Form.Where(_ => _.Id == userId).FirstOrDefaultAsync();
@@ -87,11 +87,35 @@ public class RegController : ControllerBase
             "",
             "");
         await _apiDbContext.User.AddAsync(user);
-        _apiDbContext.Form.Remove(form);        
+        _apiDbContext.Form.Remove(form);
         _apiDbContext.SaveChanges();
-        //Todo Setup email
         await _apiDbContext.SaveChangesAsync();
-        return Ok();
+
+        await MailSender.SendEmail(user.Email, "Application status", $"Congrats {user.Username} your application have been accepted");
+        return Ok("Success");
+    }
+    [HttpPost]
+    [Route("RemoveForm")]
+    public async Task<IActionResult> RemoveForm(int userid)
+    {
+        var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
+            .Select(_ => Convert.ToBoolean(_))
+            .First();
+        if (!priv)
+        {
+            var uId = HttpContext.User.Claims.Where(_ => _.Type == "userid")
+                .Select(_ => Convert.ToInt32(_))
+                .First();
+            _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
+            return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
+        }
+        _logger.Log(LogLevel.Information, $"trying to remove form with form id = {userid}");
+        var form = await _apiDbContext.Form.Where(_ => _.Id == userid).FirstOrDefaultAsync();
+        if (form == null)
+            return BadRequest("Invalid id");
+        _apiDbContext.Form.Remove(form);
+        await _apiDbContext.SaveChangesAsync();
+        return Ok("Success");
     }
     [HttpPost]
     [Route("Test")]

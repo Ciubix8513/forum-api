@@ -16,18 +16,21 @@ public class AuthController : ControllerBase
 {
     private readonly ApiDbContext _apiDbContext;
     public AuthController(ApiDbContext authContext) => _apiDbContext = authContext;
-    /*
     [HttpPost]
     [Route("reset")]
     public async Task<IActionResult> ResetPassword(string name)
     {
         var user = await _apiDbContext.User.Where(_ => _.Username == name || _.Email == name).FirstOrDefaultAsync();
-        if (user == null)
+        if (user == null || user?.Email == null)
             return BadRequest("Invalid username/email");
-            var  newPassword = "Empty"
-        MailSender.SendEmail($"Your password has been reset to {}  ")
+        var newPassword = RandomString.RandomStr(15);
+        await MailSender.SendEmail(user.Email, "Password reset", $"Your password has been reset to {newPassword}");
+        var newUser = user;
+        newUser.Password = newPassword.Hash(newUser.Username);
+        _apiDbContext.Entry(user).CurrentValues.SetValues(newUser);
+        await _apiDbContext.SaveChangesAsync();
         return Ok("Success");
-    }*/
+    }
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> LoginAsync(LoginDto login)

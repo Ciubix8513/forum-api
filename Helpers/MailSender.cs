@@ -1,26 +1,18 @@
-using System.Net;
-using System.Net.Mail;
-using System.Text;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System;
+using System.Threading.Tasks;
 
 namespace Api.Helpers;
 
 public static class MailSender
 {
-    static readonly string _sendingAddress = "Ciubix8514@gmail.com";
-    static readonly string _smtpAddress = "smtp.gmail.com";
-    static readonly int _smtpPort = 587;
-    public static void SendEmail(string Contents, string Subject, string Destination)
+    public static async Task SendEmail(string to,string subject, string body)
     {
-        MailMessage msg = new(_sendingAddress, Destination);
-        msg.Body = Contents;
-        msg.Subject = Subject;
-        msg.BodyEncoding = Encoding.UTF8;
-        msg.IsBodyHtml = false;
-        SmtpClient client = new(_smtpAddress,_smtpPort);
-        NetworkCredential credential = new("testemailsender509@gmail.com","Password1!23");
-        client.EnableSsl = true;
-        client.UseDefaultCredentials = false;
-        client.Credentials = credential;
-        client.Send(msg);
+        var key = Environment.GetEnvironmentVariable("SG_KEY");
+        var client = new SendGridClient(key);
+        var from = new EmailAddress("noreply@ciubix.xyz");
+        var msg = MailHelper.CreateSingleEmail(from,  new EmailAddress(to), subject, body, body);
+        var response = await client.SendEmailAsync(msg);
     }
 }

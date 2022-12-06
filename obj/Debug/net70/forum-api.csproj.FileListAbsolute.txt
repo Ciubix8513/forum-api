@@ -78,3 +78,6 @@
 /home/luna/Projects/School_Stuff/forum/forum-api/obj/Debug/net70/forum-api.pdb
 /home/luna/Projects/School_Stuff/forum/forum-api/obj/Debug/net70/forum-api.genruntimeconfig.cache
 /home/luna/Projects/School_Stuff/forum/forum-api/obj/Debug/net70/ref/forum-api.dll
+/home/luna/Projects/forum/forum-api/bin/Debug/net70/Newtonsoft.Json.dll
+/home/luna/Projects/forum/forum-api/bin/Debug/net70/SendGrid.dll
+/home/luna/Projects/forum/forum-api/bin/Debug/net70/StarkbankEcdsa.dll

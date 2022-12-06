@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj": {}
+    "/home/luna/Projects/forum/forum-api/forum-api.csproj": {}
   },
   "projects": {
-    "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj": {
+    "/home/luna/Projects/forum/forum-api/forum-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj",
+        "projectUniqueName": "/home/luna/Projects/forum/forum-api/forum-api.csproj",
         "projectName": "forum-api",
-        "projectPath": "/home/luna/Projects/School_Stuff/forum/forum-api/forum-api.csproj",
+        "projectPath": "/home/luna/Projects/forum/forum-api/forum-api.csproj",
         "packagesPath": "/home/luna/.nuget/packages/",
-        "outputPath": "/home/luna/Projects/School_Stuff/forum/forum-api/obj/",
+        "outputPath": "/home/luna/Projects/forum/forum-api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/luna/.nuget/NuGet/NuGet.Config"
@@ -38,10 +38,6 @@
         "net7.0": {
           "targetAlias": "net70",
           "dependencies": {
-            "Mailjet.Api": {
-              "target": "Package",
-              "version": "[3.0.0, )"
-            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -55,6 +51,10 @@
             "Pomelo.EntityFrameworkCore.mysql": {
               "target": "Package",
               "version": "[6.0.2, )"
+            },
+            "SendGrid": {
+              "target": "Package",
+              "version": "[9.28.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
