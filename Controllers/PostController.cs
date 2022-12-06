@@ -47,9 +47,14 @@ public class PostController : ControllerBase
         int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
              .Select(_ => Convert.ToInt32(_))
              .First();
+        var isMod  = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
+            .Select(_ => Convert.ToBoolean(_))
+            .First();
         var oldPost = await _apiDbContext.Post.Where(_ => _.Id == post.Id).FirstOrDefaultAsync();
         if (oldPost == null)
             return BadRequest("Post doesn't exist");
+        if(!(isMod || oldPost.CreatorId == id))
+            return BadRequest("YOU CANNOT EDIT THIS POST YOU FOOL");
         Post _post = new(post.Id,
                          id,
                          oldPost.ParentPostId,

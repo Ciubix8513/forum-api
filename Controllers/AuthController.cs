@@ -1,5 +1,6 @@
 using Api.Data;
 using System.Security.Claims;
+using Api.Helpers;
 using Api.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,13 +16,24 @@ public class AuthController : ControllerBase
 {
     private readonly ApiDbContext _apiDbContext;
     public AuthController(ApiDbContext authContext) => _apiDbContext = authContext;
-
+    /*
+    [HttpPost]
+    [Route("reset")]
+    public async Task<IActionResult> ResetPassword(string name)
+    {
+        var user = await _apiDbContext.User.Where(_ => _.Username == name || _.Email == name).FirstOrDefaultAsync();
+        if (user == null)
+            return BadRequest("Invalid username/email");
+            var  newPassword = "Empty"
+        MailSender.SendEmail($"Your password has been reset to {}  ")
+        return Ok("Success");
+    }*/
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> LoginAsync(LoginDto login)
     {
         var user = await _apiDbContext.User.Where(_ => _.Username == login.Username
-        && _.Password == login.Password).FirstOrDefaultAsync();
+        && _.Password == login.Password.Hash(login.Username)).FirstOrDefaultAsync();
         if (user == null)
             return BadRequest("Invalid credentials");
         var Claims = new List<Claim>
