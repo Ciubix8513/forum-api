@@ -67,9 +67,9 @@ public class PostController : ControllerBase
     }
     [HttpGet]
     [Route("GetPosts")]
-    public async Task<IActionResult> GetPosts(int parent)
+    public async Task<IActionResult> GetPosts(IdDto parent)
     {
-        var posts = await _apiDbContext.Post.Where(_ => _.ParentPostId == parent).ToListAsync();
+        var posts = await _apiDbContext.Post.Where(_ => _.ParentPostId == parent.Id).ToListAsync();
         var Dtos = posts.Select(_ => new PostsGetDto(_.Id,
                                                      _.CreatorId,
                                                      _.ParentPostId,
@@ -79,12 +79,12 @@ public class PostController : ControllerBase
     }
     [HttpGet]
     [Route("GetPostsUser")]
-    public async Task<IActionResult> GetPostsUser(int userid)
+    public async Task<IActionResult> GetPostsUser(IdDto dto)
     {
-        var user = await _apiDbContext.User.Where(_ => _.Id == userid).FirstOrDefaultAsync();
+        var user = await _apiDbContext.User.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if (user == null)
             return BadRequest("User doesn't exist");
-        var posts = await _apiDbContext.Post.Where(_=>_.CreatorId == userid).ToListAsync();
+        var posts = await _apiDbContext.Post.Where(_=>_.CreatorId == dto.Id).ToListAsync();
         return Ok(posts);
     }
 }

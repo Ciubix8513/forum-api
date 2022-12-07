@@ -48,7 +48,6 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUsers(UserListDto dto)
     {
         var data = await _apiDbContext.User.Where(_ => dto.Ids.Contains(_.Id)).ToListAsync();
-
         return Ok(data);
     }
 }

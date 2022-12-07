@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
 {
     private readonly ApiDbContext _apiDbContext;
     public AuthController(ApiDbContext authContext) => _apiDbContext = authContext;
-    [HttpPost]
+   /* [HttpPost]
     [Route("reset")]
     public async Task<IActionResult> ResetPassword(string name)
     {
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
         _apiDbContext.Entry(user).CurrentValues.SetValues(newUser);
         await _apiDbContext.SaveChangesAsync();
         return Ok("Success");
-    }
+    }*/
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> LoginAsync(LoginDto login)
@@ -84,11 +84,4 @@ public class AuthController : ControllerBase
         )).FirstOrDefaultAsync();
         return Ok(userProfile);
     }
-    // [Authorize]
-    // [HttpPost]
-    // [Route("ChangePassword")]
-    // public async Task<IActionResult> ChagePassword()
-    // {
-    //     return Ok("Success");
-    // }
 }

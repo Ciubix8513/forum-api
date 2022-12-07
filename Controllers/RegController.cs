@@ -52,18 +52,11 @@ public class RegController : ControllerBase
             .ToListAsync();
         return Ok(l);
     }
-    [HttpPost]
-    [Route("EmailTest")]
-    public async Task<IActionResult> EmailTest()
-    {
-        await MailSender.SendEmail("Ciubix8514@gmail.com", "Test", "This is just a test dw");
-        return Ok();
-    }
 
     [HttpPost]
     [Authorize]
     [Route("AddUser")]
-    public async Task<IActionResult> AddUser(int userId)
+    public async Task<IActionResult> AddUser(IdDto dto)
     {
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
             .Select(_ => Convert.ToBoolean(_))
@@ -77,8 +70,8 @@ public class RegController : ControllerBase
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
         }
 
-        _logger.Log(LogLevel.Information, $"trying to add user with form id = {userId}");
-        var form = await _apiDbContext.Form.Where(_ => _.Id == userId).FirstOrDefaultAsync();
+        _logger.Log(LogLevel.Information, $"trying to add user with form id = {dto.Id}");
+        var form = await _apiDbContext.Form.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if (form == null)
             return BadRequest("Invalid id");
         User user = new(await _apiDbContext.User.CountAsync() + 1,
@@ -93,12 +86,12 @@ public class RegController : ControllerBase
         _apiDbContext.SaveChanges();
         await _apiDbContext.SaveChangesAsync();
 
-        await MailSender.SendEmail(user.Email, "Application status", $"Congrats {user.Username} your application have been accepted");
+        // await MailSender.SendEmail(user.Email, "Application status", $"Congrats {user.Username} your application have been accepted");
         return Ok("Success");
     }
     [HttpPost]
     [Route("RemoveForm")]
-    public async Task<IActionResult> RemoveForm(int userid)
+    public async Task<IActionResult> RemoveForm(IdDto dto)
     {
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
             .Select(_ => Convert.ToBoolean(_))
@@ -111,20 +104,12 @@ public class RegController : ControllerBase
             _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
         }
-        _logger.Log(LogLevel.Information, $"trying to remove form with form id = {userid}");
-        var form = await _apiDbContext.Form.Where(_ => _.Id == userid).FirstOrDefaultAsync();
+        _logger.Log(LogLevel.Information, $"trying to remove form with form id = {dto.Id}");
+        var form = await _apiDbContext.Form.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if (form == null)
             return BadRequest("Invalid id");
         _apiDbContext.Form.Remove(form);
         await _apiDbContext.SaveChangesAsync();
         return Ok("Success");
-    }
-    [HttpPost]
-    [Route("Test")]
-    public async Task<IActionResult> Test()
-    {
-        var r = _apiDbContext.User.Count().ToString();
-        _logger.Log(LogLevel.Information, r);
-        return Ok(r);
     }
 }
