@@ -47,13 +47,13 @@ public class PostController : ControllerBase
         int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
              .Select(_ => Convert.ToInt32(_))
              .First();
-        var isMod  = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
+        var isMod = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
             .Select(_ => Convert.ToBoolean(_))
             .First();
         var oldPost = await _apiDbContext.Post.Where(_ => _.Id == post.Id).FirstOrDefaultAsync();
         if (oldPost == null)
             return BadRequest("Post doesn't exist");
-        if(!(isMod || oldPost.CreatorId == id))
+        if (!(isMod || oldPost.CreatorId == id))
             return BadRequest("YOU CANNOT EDIT THIS POST YOU FOOL");
         Post _post = new(post.Id,
                          id,
@@ -62,7 +62,7 @@ public class PostController : ControllerBase
                          oldPost.Date);
         _apiDbContext.Entry(oldPost).CurrentValues.SetValues(_post);
         await _apiDbContext.SaveChangesAsync();
-        _logger.Log(LogLevel.Information,$"Edited post id {post.Id}");
+        _logger.Log(LogLevel.Information, $"Edited post id {post.Id}");
         return Ok("Success");
     }
     [HttpGet]
@@ -76,5 +76,15 @@ public class PostController : ControllerBase
                                                      _.Contents,
                                                      _.Date)).ToList();
         return Ok(Dtos);
+    }
+    [HttpGet]
+    [Route("GetPostsUser")]
+    public async Task<IActionResult> GetPostsUser(int userid)
+    {
+        var user = await _apiDbContext.User.Where(_ => _.Id == userid).FirstOrDefaultAsync();
+        if (user == null)
+            return BadRequest("User doesn't exist");
+        var posts = await _apiDbContext.Post.Where(_=>_.CreatorId == userid).ToListAsync();
+        return Ok(posts);
     }
 }

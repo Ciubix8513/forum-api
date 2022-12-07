@@ -84,4 +84,11 @@ public class AuthController : ControllerBase
         )).FirstOrDefaultAsync();
         return Ok(userProfile);
     }
+    // [Authorize]
+    // [HttpPost]
+    // [Route("ChangePassword")]
+    // public async Task<IActionResult> ChagePassword()
+    // {
+    //     return Ok("Success");
+    // }
 }
