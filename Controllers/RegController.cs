@@ -24,7 +24,7 @@ public class RegController : ControllerBase
     [Route("AddForm")]
     public async Task<IActionResult> AddForm(FormAddDto form)
     {
-        var userE = await _apiDbContext.User.Where(_ => (_.Username == form.Username || _.Email == form.Email))
+        var userE = await _apiDbContext.User.Where(_ => _.Username == form.Username || _.Email == form.Email)
             .FirstOrDefaultAsync();
         var formE = await _apiDbContext.Form.Where(_ => _.Username == form.Username || _.Email == form.Email)
             .FirstOrDefaultAsync();
@@ -47,7 +47,9 @@ public class RegController : ControllerBase
     [Route("GetForms")]
     public async Task<IActionResult> GetForms()
     {
-        var l = await _apiDbContext.Form.Where(_ => _.Username != null).Select(_ => new FormGetDto(_.Id, _.Username, _.Reason, _.Date)).ToListAsync();
+        var l = await _apiDbContext.Form.Where(_ => _.Username != null)
+            .Select(_ => new FormGetDto(_.Id, _.Username, _.Reason, _.Date))
+            .ToListAsync();
         return Ok(l);
     }
     [HttpPost]

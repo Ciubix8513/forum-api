@@ -6,6 +6,8 @@ public static class RandomString
     {
         Random random = new();
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable.Repeat(chars,c).Select(_ => _[random.Next(_.Length)]).ToArray());
+        return new string(Enumerable.Repeat(chars, c)
+            .Select(_ => _[random.Next(_.Length)])
+            .ToArray());
     }
 }

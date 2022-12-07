@@ -20,7 +20,8 @@ public class AuthController : ControllerBase
     [Route("reset")]
     public async Task<IActionResult> ResetPassword(string name)
     {
-        var user = await _apiDbContext.User.Where(_ => _.Username == name || _.Email == name).FirstOrDefaultAsync();
+        var user = await _apiDbContext.User.Where(_ => _.Username == name || _.Email == name)
+            .FirstOrDefaultAsync();
         if (user == null || user?.Email == null)
             return BadRequest("Invalid username/email");
         var newPassword = RandomString.RandomStr(15);
@@ -45,7 +46,9 @@ public class AuthController : ControllerBase
            new Claim("username",login.Username),
            new Claim("privilege",user.Privilege.ToString())
         };
-        var claimsIdentity = new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var claimsIdentity = new ClaimsIdentity(
+            Claims,
+            CookieAuthenticationDefaults.AuthenticationScheme);
         var authProperties = new AuthenticationProperties();
 
         await HttpContext.SignInAsync(

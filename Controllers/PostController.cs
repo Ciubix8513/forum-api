@@ -70,8 +70,11 @@ public class PostController : ControllerBase
     public async Task<IActionResult> GetPosts(int parent)
     {
         var posts = await _apiDbContext.Post.Where(_ => _.ParentPostId == parent).ToListAsync();
-        var Dtos = posts.Select(_ => new PostsGetDto(_.Id, _.CreatorId, _.ParentPostId, _.Contents, _.Date)).ToList();
-
+        var Dtos = posts.Select(_ => new PostsGetDto(_.Id,
+                                                     _.CreatorId,
+                                                     _.ParentPostId,
+                                                     _.Contents,
+                                                     _.Date)).ToList();
         return Ok(Dtos);
     }
 }
