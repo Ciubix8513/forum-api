@@ -84,4 +84,17 @@ public class AuthController : ControllerBase
         )).FirstOrDefaultAsync();
         return Ok(userProfile);
     }
+    [HttpPost]
+    [Route("SetPasswordDev")]
+    public async Task<IActionResult> SetPasswordDev(int id, string password)
+    {
+        var user = await _apiDbContext.User.Where(_ => _.Id == id).FirstOrDefaultAsync();
+        if(user == null)
+        return BadRequest();
+        var newUser = user;
+        newUser.Password = password.Hash(user.Username);
+        _apiDbContext.Entry(user).CurrentValues.SetValues(newUser);
+        await _apiDbContext.SaveChangesAsync();
+        return Ok();
+    }
 }

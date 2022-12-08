@@ -67,7 +67,7 @@ public class PostController : ControllerBase
     }
     [HttpGet]
     [Route("GetPosts")]
-    public async Task<IActionResult> GetPosts(IdDto parent)
+    public async Task<IActionResult> GetPosts([FromQuery]IdDto parent)
     {
         var posts = await _apiDbContext.Post.Where(_ => _.ParentPostId == parent.Id).ToListAsync();
         var Dtos = posts.Select(_ => new PostsGetDto(_.Id,
@@ -79,7 +79,7 @@ public class PostController : ControllerBase
     }
     [HttpGet]
     [Route("GetPostsUser")]
-    public async Task<IActionResult> GetPostsUser(IdDto dto)
+    public async Task<IActionResult> GetPostsUser([FromQuery]IdDto dto)
     {
         var user = await _apiDbContext.User.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if (user == null)
