@@ -67,24 +67,34 @@ public class PostController : ControllerBase
     }
     [HttpGet]
     [Route("GetPosts")]
-    public async Task<IActionResult> GetPosts([FromQuery]IdDto parent)
+    public async Task<IActionResult> GetPosts([FromQuery] IdDto parent)
     {
-        var posts = await _apiDbContext.Post.Where(_ => _.ParentPostId == parent.Id).ToListAsync();
-        var Dtos = posts.Select(_ => new PostsGetDto(_.Id,
-                                                     _.CreatorId,
-                                                     _.ParentPostId,
-                                                     _.Contents,
-                                                     _.Date)).ToList();
-        return Ok(Dtos);
+        var q = from p in _apiDbContext.Post
+                join u in _apiDbContext.User on p.CreatorId equals u.Id
+                where p.ParentPostId == parent.Id
+                select new PostsGetDto(p.Id,
+                                       u.Id,
+                                       u.Username,
+                                       p.ParentPostId,
+                                       p.Contents,
+                                       p.Date);
+        var list = await q.ToListAsync();
+        return Ok(list);
     }
     [HttpGet]
     [Route("GetPostsUser")]
-    public async Task<IActionResult> GetPostsUser([FromQuery]IdDto dto)
+    public async Task<IActionResult> GetPostsUser([FromQuery] IdDto dto)
     {
-        var user = await _apiDbContext.User.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
-        if (user == null)
-            return BadRequest("User doesn't exist");
-        var posts = await _apiDbContext.Post.Where(_=>_.CreatorId == dto.Id).ToListAsync();
-        return Ok(posts);
+        var q = from p in _apiDbContext.Post
+                join u in _apiDbContext.User on p.CreatorId equals u.Id
+                where p.CreatorId == dto.Id
+                select new PostsGetDto(p.Id,
+                                       u.Id,
+                                       u.Username,
+                                       p.ParentPostId,
+                                       p.Contents,
+                                       p.Date);
+        var list = await q.ToListAsync();
+        return Ok(list);
     }
 }
