@@ -64,7 +64,7 @@ public class RegController : ControllerBase
         if (!priv)
         {
             var uId = HttpContext.User.Claims.Where(_ => _.Type == "userid")
-                .Select(_ => Convert.ToInt32(_))
+                .Select(_ => Convert.ToInt32(_.Value))
                 .First();
             _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
@@ -99,7 +99,7 @@ public class RegController : ControllerBase
         if (!priv)
         {
             var uId = HttpContext.User.Claims.Where(_ => _.Type == "userid")
-                .Select(_ => Convert.ToInt32(_))
+                .Select(_ => Convert.ToInt32(_.Value))
                 .First();
             _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");

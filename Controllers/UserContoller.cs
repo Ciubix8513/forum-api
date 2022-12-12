@@ -26,7 +26,7 @@ public class UserController : ControllerBase
     {
         
         int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
-             .Select(_ => Convert.ToInt32(_))
+             .Select(_ => Convert.ToInt32(_.Value))
              .First();
         var isMod  = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
             .Select(_ => Convert.ToBoolean(_))
