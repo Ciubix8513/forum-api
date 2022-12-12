@@ -75,9 +75,11 @@ public class PostController : ControllerBase
                 select new PostsGetDto(p.Id,
                                        u.Id,
                                        u.Username,
+                                       u.PFP,
                                        p.ParentPostId,
                                        p.Contents,
-                                       p.Date);
+                                       p.Date,
+                                       _apiDbContext.Post.Select( _ => _.ParentPostId ==p.Id).Count());
         var list = await q.ToListAsync();
         return Ok(list);
     }
@@ -91,10 +93,31 @@ public class PostController : ControllerBase
                 select new PostsGetDto(p.Id,
                                        u.Id,
                                        u.Username,
+                                       u.PFP,
                                        p.ParentPostId,
                                        p.Contents,
-                                       p.Date);
+                                       p.Date,
+                                       _apiDbContext.Post.Select( _ => _.ParentPostId ==p.Id).Count());
         var list = await q.ToListAsync();
         return Ok(list);
+    }
+    [HttpGet]
+    [Route("GetPost")]
+    public async Task<IActionResult> GetPost(int id)
+    {
+        
+        var q = from p in _apiDbContext.Post
+                join u in _apiDbContext.User on p.CreatorId equals u.Id
+                where p.Id == id
+                select new PostsGetDto(p.Id,
+                                       u.Id,
+                                       u.Username,
+                                       u.PFP,
+                                       p.ParentPostId,
+                                       p.Contents,
+                                       p.Date,
+                                       _apiDbContext.Post.Select( _ => _.ParentPostId ==p.Id).Count());
+        var post = await q.FirstOrDefaultAsync();
+        return Ok(post);
     }
 }
