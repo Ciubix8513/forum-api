@@ -113,11 +113,13 @@ public class PostController : ControllerBase
                                        u.Id,
                                        u.Username,
                                        u.PFP,
-                                       p.ParentPostId,
+                                       p.ParentPostId == null ? 0 : p.ParentPostId,
                                        p.Contents,
                                        p.Date,
                                        _apiDbContext.Post.Select( _ => _.ParentPostId ==p.Id).Count());
         var post = await q.FirstOrDefaultAsync();
+        if(post == null)
+            return BadRequest("Post doesn't exits");
         return Ok(post);
     }
 }
