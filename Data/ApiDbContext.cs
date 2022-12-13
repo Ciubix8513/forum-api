@@ -9,7 +9,7 @@ namespace Api.Data
         public DbSet<User> User { get; set; }
         public DbSet<Form> Form { get; set; }
         public DbSet<Post> Post { get; set; }
-        public DbSet<PReport> PReport { get; set; }
-        public DbSet<UReport> UReport { get; set; }
+        public DbSet<PReport> pReport { get; set; }
+        public DbSet<UReport> uReport { get; set; }
     }
 }

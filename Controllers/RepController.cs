@@ -27,7 +27,7 @@ public class RepController : ControllerBase
         var obj = await _apiDbContext.User.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if(obj == null)
             return BadRequest("User does not exist");
-        await _apiDbContext.PReport.AddAsync(new(await _apiDbContext.PReport.CountAsync() + 1, dto.Id, dto.Reason));
+        await _apiDbContext.pReport.AddAsync(new(await _apiDbContext.pReport.CountAsync() + 1, dto.Id, dto.Reason));
         await _apiDbContext.SaveChangesAsync();   
         _logger.Log(LogLevel.Information,$"Reported User {dto.Id}");
         return Ok("Success");
@@ -40,7 +40,7 @@ public class RepController : ControllerBase
         var obj = await _apiDbContext.Post.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if(obj == null)
             return BadRequest("Post does not exist");
-        await _apiDbContext.PReport.AddAsync(new(await _apiDbContext.PReport.CountAsync() + 1,dto.Id,dto.Reason));
+        await _apiDbContext.pReport.AddAsync(new(await _apiDbContext.pReport.CountAsync() + 1,dto.Id,dto.Reason));
         await _apiDbContext.SaveChangesAsync();   
         _logger.Log(LogLevel.Information,$"Reported Post {dto.Id}");
         return Ok("Success");
