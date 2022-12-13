@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 builder.Services.AddDbContext<Api.Data.ApiDbContext>(options =>
 {
-    options.UseMySql(builder.Configuration.GetConnectionString("ApiAuthConnection"), ServerVersion);
+    options.UseMySql(builder.Configuration.GetConnectionString("ApiAuthConnection") + Environment.GetEnvironmentVariable("DB_PASSWORD") +';',ServerVersion);
 });
 
 
