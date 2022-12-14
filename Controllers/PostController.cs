@@ -79,7 +79,8 @@ public class PostController : ControllerBase
                                        p.ParentPostId,
                                        p.Contents,
                                        p.Date,
-                                       _apiDbContext.Post.Where(_ => _.ParentPostId == p.Id).Count());
+                                       _apiDbContext.Post.Where(_ => _.ParentPostId == p.Id).Count(),
+                                       _apiDbContext.Post.Where(_=>_.CreatorId == u.Id).Count());
         var list = await q.ToListAsync();
         return Ok(list);
     }
@@ -97,7 +98,8 @@ public class PostController : ControllerBase
                                        p.ParentPostId,
                                        p.Contents,
                                        p.Date,
-                                       _apiDbContext.Post.Where( _ => _.ParentPostId ==p.Id).Count());
+                                       _apiDbContext.Post.Where( _ => _.ParentPostId ==p.Id).Count(),
+                                       _apiDbContext.Post.Where(_=>_.CreatorId == u.Id).Count());
         var list = await q.ToListAsync();
         return Ok(list);
     }
@@ -116,7 +118,8 @@ public class PostController : ControllerBase
                                        p.ParentPostId == null ? 0 : p.ParentPostId,
                                        p.Contents,
                                        p.Date,
-                                       _apiDbContext.Post.Where( _ => _.ParentPostId ==p.Id).Count());
+                                       _apiDbContext.Post.Where( _ => _.ParentPostId ==p.Id).Count(),
+                                       _apiDbContext.Post.Where(_=>_.CreatorId == u.Id).Count());
         var post = await q.FirstOrDefaultAsync();
         if(post == null)
             return BadRequest("Post doesn't exits");

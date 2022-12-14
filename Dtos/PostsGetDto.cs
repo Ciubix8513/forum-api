@@ -2,7 +2,7 @@ namespace Api.Dtos;
 
 public class PostsGetDto
 {
-    public PostsGetDto(int id, int? creatorId, string? creatorUsername, string? creatorPFP, int? parentPostId, string? contents, DateTime? date, int? replyCount)
+    public PostsGetDto(int id, int? creatorId, string? creatorUsername, string? creatorPFP, int? parentPostId, string? contents, DateTime? date, int? replyCount, int creatorPostCount)
     {
         Id = id;
         CreatorId = creatorId;
@@ -12,6 +12,7 @@ public class PostsGetDto
         Contents = contents;
         Date = date;
         ReplyCount = replyCount;
+        CreatorPostCount = creatorPostCount;
     }
 
     public int Id {get; set;}
@@ -22,4 +23,5 @@ public class PostsGetDto
     public string? Contents {get; set;}
     public DateTime? Date {get; set;}
     public int? ReplyCount {get;set;}
+    public int CreatorPostCount {get; set;}
 }
