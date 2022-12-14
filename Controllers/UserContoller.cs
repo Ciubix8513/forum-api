@@ -44,10 +44,16 @@ public class UserController : ControllerBase
         return Ok("Success");
     }
     [HttpGet]
-    [Route("GetUsers")]
-    public async Task<IActionResult> GetUsers(UserListDto dto)
+    [Route("GetUser")]
+    public async Task<IActionResult> GetUsers(int id)
     {
-        var data = await _apiDbContext.User.Where(_ => dto.Ids.Contains(_.Id)).ToListAsync();
-        return Ok(data);
+        var usr = await _apiDbContext.User.Where(_ => _.Id == id).Select(_ => new UserDataDto(
+            _.Id,
+            _.Username,
+            _.BIO,
+            _apiDbContext.Post.Where(p=> p.CreatorId ==_.Id).Count(),
+            _.PFP
+        )).FirstOrDefaultAsync();
+        return Ok(usr);
     }
 }
