@@ -39,8 +39,8 @@ public class PostController : ControllerBase
         _logger.Log(LogLevel.Information, $"Added new post with id {_post.Id} by user with id {id}");
         return Ok("Success");
     }
-    [HttpPost]
     [Authorize]
+    [HttpPost]
     [Route("EditPost")]
     public async Task<IActionResult> EditPost(PostEditDto post)
     {
@@ -48,7 +48,7 @@ public class PostController : ControllerBase
              .Select(_ => Convert.ToInt32(_.Value))
              .First();
         var isMod = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
-            .Select(_ => Convert.ToBoolean(_))
+            .Select(_ => Convert.ToBoolean(_.Value))
             .First();
         var oldPost = await _apiDbContext.Post.Where(_ => _.Id == post.Id).FirstOrDefaultAsync();
         if (oldPost == null)
@@ -71,7 +71,7 @@ public class PostController : ControllerBase
     {
         var q = from p in _apiDbContext.Post
                 join u in _apiDbContext.User on p.CreatorId equals u.Id
-                where p.ParentPostId == parent.Id
+                where p.ParentPostId == parent.Id && p.Contents != null
                 select new PostsGetDto(p.Id,
                                        u.Id,
                                        u.Username,
@@ -79,8 +79,8 @@ public class PostController : ControllerBase
                                        p.ParentPostId,
                                        p.Contents,
                                        p.Date,
-                                       _apiDbContext.Post.Where(_ => _.ParentPostId == p.Id).Count(),
-                                       _apiDbContext.Post.Where(_=>_.CreatorId == u.Id).Count());
+                                       _apiDbContext.Post.Where(_ => _.ParentPostId == p.Id && _.Contents != null).Count(),
+                                       _apiDbContext.Post.Where(_ => _.CreatorId == u.Id && _.Contents != null).Count());
         var list = await q.ToListAsync();
         return Ok(list);
     }
@@ -90,7 +90,7 @@ public class PostController : ControllerBase
     {
         var q = from p in _apiDbContext.Post
                 join u in _apiDbContext.User on p.CreatorId equals u.Id
-                where p.CreatorId == dto.Id
+                where p.CreatorId == dto.Id && p.Contents != null
                 select new PostsGetDto(p.Id,
                                        u.Id,
                                        u.Username,
@@ -98,8 +98,8 @@ public class PostController : ControllerBase
                                        p.ParentPostId,
                                        p.Contents,
                                        p.Date,
-                                       _apiDbContext.Post.Where( _ => _.ParentPostId ==p.Id).Count(),
-                                       _apiDbContext.Post.Where(_=>_.CreatorId == u.Id).Count());
+                                       _apiDbContext.Post.Where(_ => _.ParentPostId == p.Id && _.Contents != null).Count(),
+                                       _apiDbContext.Post.Where(_ => _.CreatorId == u.Id && _.Contents != null).Count());
         var list = await q.ToListAsync();
         return Ok(list);
     }
@@ -107,10 +107,10 @@ public class PostController : ControllerBase
     [Route("GetPost")]
     public async Task<IActionResult> GetPost(int id)
     {
-        
+
         var q = from p in _apiDbContext.Post
                 join u in _apiDbContext.User on p.CreatorId equals u.Id
-                where p.Id == id
+                where p.Id == id && p.Contents != null
                 select new PostsGetDto(p.Id,
                                        u.Id,
                                        u.Username,
@@ -118,10 +118,10 @@ public class PostController : ControllerBase
                                        p.ParentPostId == null ? 0 : p.ParentPostId,
                                        p.Contents,
                                        p.Date,
-                                       _apiDbContext.Post.Where( _ => _.ParentPostId ==p.Id).Count(),
-                                       _apiDbContext.Post.Where(_=>_.CreatorId == u.Id).Count());
+                                       _apiDbContext.Post.Where(_ => _.ParentPostId == p.Id && _.Contents != null).Count(),
+                                       _apiDbContext.Post.Where(_ => _.CreatorId == u.Id && _.Contents != null).Count());
         var post = await q.FirstOrDefaultAsync();
-        if(post == null)
+        if (post == null)
             return BadRequest("Post doesn't exits");
         return Ok(post);
     }
