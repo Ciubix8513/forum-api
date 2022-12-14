@@ -29,7 +29,7 @@ public class UserController : ControllerBase
              .Select(_ => Convert.ToInt32(_.Value))
              .First();
         var isMod  = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
-            .Select(_ => Convert.ToBoolean(_))
+            .Select(_ => Convert.ToBoolean(_.Value))
             .First();
         var user = await _apiDbContext.User.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
         if (user == null)
@@ -51,7 +51,7 @@ public class UserController : ControllerBase
             _.Id,
             _.Username,
             _.BIO,
-            _apiDbContext.Post.Where(p=> p.CreatorId ==_.Id).Count(),
+            _apiDbContext.Post.Where(p=> p.CreatorId ==_.Id && p.Contents != null).Count(),
             _.PFP
         )).FirstOrDefaultAsync();
         return Ok(usr);
