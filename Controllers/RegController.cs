@@ -56,10 +56,10 @@ public class RegController : ControllerBase
     [HttpPost]
     [Authorize]
     [Route("AddUser")]
-    public async Task<IActionResult> AddUser(IdDto dto)
+    public async Task<IActionResult> AddUser(int Id)
     {
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
-            .Select(_ => Convert.ToBoolean(_))
+            .Select(_ => Convert.ToBoolean(_.Value))
             .First();
         if (!priv)
         {
@@ -70,8 +70,8 @@ public class RegController : ControllerBase
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
         }
 
-        _logger.Log(LogLevel.Information, $"trying to add user with form id = {dto.Id}");
-        var form = await _apiDbContext.Form.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
+        _logger.Log(LogLevel.Information, $"trying to add user with form id = {Id}");
+        var form = await _apiDbContext.Form.Where(_ => _.Id == Id).FirstOrDefaultAsync();
         if (form == null)
             return BadRequest("Invalid id");
         User user = new(await _apiDbContext.User.CountAsync() + 1,
@@ -91,10 +91,10 @@ public class RegController : ControllerBase
     }
     [HttpPost]
     [Route("RemoveForm")]
-    public async Task<IActionResult> RemoveForm(IdDto dto)
+    public async Task<IActionResult> RemoveForm(int Id)
     {
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
-            .Select(_ => Convert.ToBoolean(_))
+            .Select(_ => Convert.ToBoolean(_.Value))
             .First();
         if (!priv)
         {
@@ -104,8 +104,8 @@ public class RegController : ControllerBase
             _logger.Log(LogLevel.Information, $"User with id = {uId} tried to access AddUser, GO BAN THAT MORON!");
             return BadRequest("Go fuck yourself you non mod idiot, you thought I didn't have protection against this, you're so wrong asshole lmao you bout to get banned lol");
         }
-        _logger.Log(LogLevel.Information, $"trying to remove form with form id = {dto.Id}");
-        var form = await _apiDbContext.Form.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
+        _logger.Log(LogLevel.Information, $"trying to remove form with form id = {Id}");
+        var form = await _apiDbContext.Form.Where(_ => _.Id == Id).FirstOrDefaultAsync();
         if (form == null)
             return BadRequest("Invalid id");
         _apiDbContext.Form.Remove(form);

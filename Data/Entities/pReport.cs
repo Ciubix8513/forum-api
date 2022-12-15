@@ -2,7 +2,7 @@ namespace Api.Data.Entities;
 
 public class PReport
 {
-    public PReport(int id, int postId, string reason)
+    public PReport(int id, int postId, string? reason)
     {
         Id = id;
         PostId = postId;
@@ -11,5 +11,5 @@ public class PReport
 
     public int Id {get; set;}
     public int PostId {get; set;}
-    public string Reason {get; set;}
+    public string? Reason {get; set;}
 } 
