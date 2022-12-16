@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class PostController : ControllerBase
 {
     private readonly ApiDbContext _apiDbContext;
@@ -17,9 +16,7 @@ public class PostController : ControllerBase
         _apiDbContext = apiDbContext;
         _logger = logger;
     }
-    [HttpPost]
-    [Authorize]
-    [Route("AddPost")]
+    [HttpPost, Authorize, Route("AddPost")]
     public async Task<IActionResult> AddPost(PostAddDto post)
     {
         var parent = await _apiDbContext.Post.Where(_ => _.Id == post.ParentPostId).FirstOrDefaultAsync();
@@ -39,9 +36,7 @@ public class PostController : ControllerBase
         _logger.Log(LogLevel.Information, $"Added new post with id {_post.Id} by user with id {id}");
         return Ok("Success");
     }
-    [Authorize]
-    [HttpPost]
-    [Route("EditPost")]
+    [Authorize, HttpPost, Route("EditPost")]
     public async Task<IActionResult> EditPost(PostEditDto post)
     {
         int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
@@ -65,8 +60,7 @@ public class PostController : ControllerBase
         _logger.Log(LogLevel.Information, $"Edited post id {post.Id}");
         return Ok("Success");
     }
-    [HttpGet]
-    [Route("GetPosts")]
+    [HttpGet, Route("GetPosts")]
     public async Task<IActionResult> GetPosts([FromQuery] IdDto parent)
     {
         var q = from p in _apiDbContext.Post
@@ -84,8 +78,7 @@ public class PostController : ControllerBase
         var list = await q.ToListAsync();
         return Ok(list);
     }
-    [HttpGet]
-    [Route("GetPostsUser")]
+    [HttpGet, Route("GetPostsUser")]
     public async Task<IActionResult> GetPostsUser([FromQuery] IdDto dto)
     {
         var q = from p in _apiDbContext.Post
@@ -103,8 +96,7 @@ public class PostController : ControllerBase
         var list = await q.ToListAsync();
         return Ok(list);
     }
-    [HttpGet]
-    [Route("GetPost")]
+    [HttpGet, Route("GetPost")]
     public async Task<IActionResult> GetPost(int id)
     {
 

@@ -10,30 +10,28 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly ApiDbContext _apiDbContext;
     public AuthController(ApiDbContext authContext) => _apiDbContext = authContext;
-   /* [HttpPost]
-    [Route("reset")]
-    public async Task<IActionResult> ResetPassword(string name)
-    {
-        var user = await _apiDbContext.User.Where(_ => _.Username == name || _.Email == name)
-            .FirstOrDefaultAsync();
-        if (user == null || user?.Email == null)
-            return BadRequest("Invalid username/email");
-        var newPassword = RandomString.RandomStr(15);
-        await MailSender.SendEmail(user.Email, "Password reset", $"Your password has been reset to {newPassword}");
-        var newUser = user;
-        newUser.Password = newPassword.Hash(newUser.Username);
-        _apiDbContext.Entry(user).CurrentValues.SetValues(newUser);
-        await _apiDbContext.SaveChangesAsync();
-        return Ok("Success");
-    }*/
-    [HttpPost]
-    [Route("login")]
+    /* [HttpPost]
+     [Route("reset")]
+     public async Task<IActionResult> ResetPassword(string name)
+     {
+         var user = await _apiDbContext.User.Where(_ => _.Username == name || _.Email == name)
+             .FirstOrDefaultAsync();
+         if (user == null || user?.Email == null)
+             return BadRequest("Invalid username/email");
+         var newPassword = RandomString.RandomStr(15);
+         await MailSender.SendEmail(user.Email, "Password reset", $"Your password has been reset to {newPassword}");
+         var newUser = user;
+         newUser.Password = newPassword.Hash(newUser.Username);
+         _apiDbContext.Entry(user).CurrentValues.SetValues(newUser);
+         await _apiDbContext.SaveChangesAsync();
+         return Ok("Success");
+     }*/
+    [HttpPost, Route("login")]
     public async Task<IActionResult> LoginAsync(LoginDto login)
     {
         var user = await _apiDbContext.User.Where(_ => _.Username == login.Username
@@ -58,17 +56,14 @@ public class AuthController : ControllerBase
         );
         return Ok("Success");
     }
-    [HttpPost]
-    [Route("logout")]
+    [Authorize, HttpPost, Route("logout")]
     public async Task<IActionResult> LogoutAsync()
     {
         await HttpContext.SignOutAsync();
         return Ok("Success");
     }
 
-    [Authorize]
-    [HttpGet]
-    [Route("user-profile")]
+    [Authorize, HttpGet, Route("user-profile")]
     public async Task<IActionResult> UserProfileAsync()
     {
         int id = HttpContext.User.Claims.Where(_ => _.Type == "userid")
@@ -83,18 +78,5 @@ public class AuthController : ControllerBase
             _.Password
         )).FirstOrDefaultAsync();
         return Ok(userProfile);
-    }
-    [HttpPost]
-    [Route("SetPasswordDev")]
-    public async Task<IActionResult> SetPasswordDev(int id, string password)
-    {
-        var user = await _apiDbContext.User.Where(_ => _.Id == id).FirstOrDefaultAsync();
-        if(user == null)
-        return BadRequest();
-        var newUser = user;
-        newUser.Password = password.Hash(user.Username);
-        _apiDbContext.Entry(user).CurrentValues.SetValues(newUser);
-        await _apiDbContext.SaveChangesAsync();
-        return Ok();
     }
 }

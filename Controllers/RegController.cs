@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class RegController : ControllerBase
 {
     private readonly ApiDbContext _apiDbContext;
@@ -20,8 +19,7 @@ public class RegController : ControllerBase
         _apiDbContext = apiDbContext;
         _logger = logger;
     }
-    [HttpPost]
-    [Route("AddForm")]
+    [HttpPost, Route("AddForm")]
     public async Task<IActionResult> AddForm(FormAddDto form)
     {
         var userE = await _apiDbContext.User.Where(_ => _.Username == form.Username || _.Email == form.Email)
@@ -43,8 +41,7 @@ public class RegController : ControllerBase
         _logger.Log(LogLevel.Information, $"Added new form with id = {FormEntity.Id}");
         return Ok("Success");
     }
-    [HttpGet]
-    [Route("GetForms")]
+    [HttpGet, Route("GetForms")]
     public async Task<IActionResult> GetForms()
     {
         var l = await _apiDbContext.Form.Where(_ => _.Username != null)
@@ -53,9 +50,7 @@ public class RegController : ControllerBase
         return Ok(l);
     }
 
-    [HttpPost]
-    [Authorize]
-    [Route("AddUser")]
+    [HttpPost, Authorize, Route("AddUser")]
     public async Task<IActionResult> AddUser(int Id)
     {
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
@@ -89,8 +84,7 @@ public class RegController : ControllerBase
         // await MailSender.SendEmail(user.Email, "Application status", $"Congrats {user.Username} your application have been accepted");
         return Ok("Success");
     }
-    [HttpPost]
-    [Route("RemoveForm")]
+    [Authorize, HttpPost, Route("RemoveForm")]
     public async Task<IActionResult> RemoveForm(int Id)
     {
         var priv = HttpContext.User.Claims.Where(_ => _.Type == "privilege")
