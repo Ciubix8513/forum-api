@@ -19,24 +19,25 @@ public class RepController : ControllerBase
         _logger = logger;
     }
     [Authorize, HttpPost, Route("RepUser")]
-    public async Task<IActionResult> RepUser(RepDto dto)
+    public async Task<IActionResult> RepUser(int Id, string? Reason)
     {
-        var obj = await _apiDbContext.User.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
+        _logger.Log(LogLevel.Debug, $"Trying to rep user {Id}");
+        var obj = await _apiDbContext.User.Where(_ => _.Id == Id).FirstOrDefaultAsync();
         if (obj == null) return BadRequest("User does not exist");
-        await _apiDbContext.uReport.AddAsync(new(await _apiDbContext.pReport.CountAsync() + 1, dto.Id, dto.Reason));
+        await _apiDbContext.uReport.AddAsync(new(await _apiDbContext.pReport.CountAsync() + 1, Id, Reason));
         await _apiDbContext.SaveChangesAsync();
-        _logger.Log(LogLevel.Information, $"Reported User {dto.Id}");
+        _logger.Log(LogLevel.Information, $"Reported User {Id}");
         return Ok("Success");
     }
     [Authorize, HttpPost, Route("RepPost")]
-    public async Task<IActionResult> RepPost(RepDto dto)
+    public async Task<IActionResult> RepPost(int Id,string? Reason)
     {
-        var obj = await _apiDbContext.Post.Where(_ => _.Id == dto.Id).FirstOrDefaultAsync();
+        var obj = await _apiDbContext.Post.Where(_ => _.Id ==  Id).FirstOrDefaultAsync();
         if (obj == null)
             return BadRequest("Post does not exist");
-        await _apiDbContext.pReport.AddAsync(new(await _apiDbContext.pReport.CountAsync() + 1, dto.Id, dto.Reason));
+        await _apiDbContext.pReport.AddAsync(new(await _apiDbContext.pReport.CountAsync() + 1,  Id, Reason));
         await _apiDbContext.SaveChangesAsync();
-        _logger.Log(LogLevel.Information, $"Reported Post {dto.Id}");
+        _logger.Log(LogLevel.Information, $"Reported Post { Id}");
         return Ok("Success");
     }
 
